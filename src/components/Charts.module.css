@@ -1,0 +1,15 @@
+.chartCard {
+  background: var(--surface-elevated);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1rem;
+  min-height: 300px;
+}
+
+.chartTitle {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--emerald-400);
+  margin-bottom: 0.75rem;
+  letter-spacing: 0.02em;
+}

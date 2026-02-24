@@ -1,0 +1,57 @@
+.wrapper {
+  background: var(--surface-elevated);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1.5rem;
+}
+
+.title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--emerald-400);
+  margin-bottom: 0.5rem;
+}
+
+.subtitle {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  margin-bottom: 1.5rem;
+}
+
+.summary {
+  margin-bottom: 2rem;
+}
+
+.summaryItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 0;
+}
+
+.summaryLabel {
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+}
+
+.summaryValuePositive {
+  font-weight: 700;
+  color: var(--emerald-400);
+  font-variant-numeric: tabular-nums;
+}
+
+.summaryValueNegative {
+  font-weight: 700;
+  color: #f59e0b;
+  font-variant-numeric: tabular-nums;
+}
+
+.hr {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 0.5rem 0;
+}
+
+.chartWrap {
+  min-height: 320px;
+}
