@@ -13,7 +13,7 @@ import { CalculatorForm } from './components/CalculatorForm.jsx'
 import { KPICards } from './components/KPICards.jsx'
 import { EmissionsvergleichChart, EinsparungsaufschlüsselungChart, PreisszenarienChart } from './components/Charts.jsx'
 import { FinanzenTab } from './components/FinanzenTab.jsx'
-import styles from './App.css'
+import styles from './App.module.css'
 
 const DEFAULT_INPUTS = {
   anzahlBusse: 50,
