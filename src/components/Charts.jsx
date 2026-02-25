@@ -21,21 +21,44 @@ const SLATE = '#64748b'
 const AMBER = '#f59e0b'
 
 export function EmissionsvergleichChart({ dieselKg, hvoKg }) {
+  const [unit, setUnit] = React.useState('kg')
+  const isTonnen = unit === 't'
+  const dieselVal = isTonnen ? Math.round((dieselKg / 1000) * 100) / 100 : Math.round(dieselKg)
+  const hvoVal = isTonnen ? Math.round((hvoKg / 1000) * 100) / 100 : Math.round(hvoKg)
   const data = [
-    { name: 'Diesel', emissionen: Math.round(dieselKg), fill: SLATE },
-    { name: 'HVO100', emissionen: Math.round(hvoKg), fill: EMERALD },
+    { name: 'Diesel', emissionen: dieselVal, fill: SLATE },
+    { name: 'HVO100', emissionen: hvoVal, fill: EMERALD },
   ]
+  const formatTooltip = (v) => (isTonnen ? `${Number(v).toFixed(2)} t CO₂` : `${v} kg CO₂`)
   return (
     <div className={styles.chartCard}>
-      <h3 className={styles.chartTitle}>CO₂-Emissionen (kg/Jahr)</h3>
+      <div className={styles.chartHeader}>
+        <h3 className={styles.chartTitle}>CO₂-Emissionen</h3>
+        <div className={styles.unitToggle}>
+          <button
+            type="button"
+            className={unit === 'kg' ? styles.unitActive : styles.unitBtn}
+            onClick={() => setUnit('kg')}
+          >
+            kg/Jahr
+          </button>
+          <button
+            type="button"
+            className={unit === 't' ? styles.unitActive : styles.unitBtn}
+            onClick={() => setUnit('t')}
+          >
+            t/Jahr
+          </button>
+        </div>
+      </div>
       <ResponsiveContainer width="100%" height={260}>
         <BarChart data={data} margin={{ top: 12, right: 12, left: 12, bottom: 12 }}>
           <CartesianGrid strokeDasharray="3 3" stroke="rgba(16,185,129,0.15)" />
           <XAxis dataKey="name" stroke="#94a3b8" fontSize={12} />
-          <YAxis stroke="#94a3b8" fontSize={12} />
+          <YAxis stroke="#94a3b8" fontSize={12} unit={isTonnen ? ' t' : ' kg'} />
           <Tooltip
             contentStyle={{ background: '#132033', border: '1px solid rgba(16,185,129,0.3)', borderRadius: 8 }}
-            formatter={(v) => [`${v} kg CO₂`, 'Emissionen']}
+            formatter={(v) => [formatTooltip(v), 'Emissionen']}
           />
           <Bar dataKey="emissionen" radius={[4, 4, 0, 0]}>
             {data.map((entry, i) => (
@@ -87,19 +110,21 @@ export function EinsparungsaufschlüsselungChart({ thgErloese, behgErsparnis, kr
   )
 }
 
+const CO2_MINDERUNG_T_PRO_LITER = (2.65 - 0.2) / 1000
+
 export function PreisszenarienChart({ basisQuotenPreis, literJahr }) {
-  const preise = [20, 30, 40, 50, 60, basisQuotenPreis].filter((p, i, a) => a.indexOf(p) === i).sort((a, b) => a - b)
+  const preise = [200, 300, 400, 500, 600, basisQuotenPreis].filter((p, i, a) => a.indexOf(p) === i).sort((a, b) => a - b)
   const data = preise.map((p) => {
-    const thgEuro = ((0.9 * literJahr) / 1000) * (p / 100)
+    const thgEuro = literJahr * CO2_MINDERUNG_T_PRO_LITER * p
     return { quotenPreis: p, thgErloese: Math.round(thgEuro) }
   })
   return (
     <div className={styles.chartCard}>
-      <h3 className={styles.chartTitle}>THG-Erlöse bei verschiedenen Quotenpreisen (Ct.)</h3>
+      <h3 className={styles.chartTitle}>THG-Erlöse bei verschiedenen Quotenpreisen (€/t CO₂)</h3>
       <ResponsiveContainer width="100%" height={260}>
         <LineChart data={data} margin={{ top: 12, right: 12, left: 12, bottom: 12 }}>
           <CartesianGrid strokeDasharray="3 3" stroke="rgba(16,185,129,0.15)" />
-          <XAxis dataKey="quotenPreis" stroke="#94a3b8" fontSize={12} unit=" Ct." />
+          <XAxis dataKey="quotenPreis" stroke="#94a3b8" fontSize={12} unit=" €/t" />
           <YAxis stroke="#94a3b8" fontSize={12} />
           <Tooltip
             contentStyle={{ background: '#132033', border: '1px solid rgba(16,185,129,0.3)', borderRadius: 8 }}

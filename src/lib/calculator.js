@@ -19,15 +19,17 @@ export function dieselVerbrauchProJahr(anzahlBusse, laufleistungKm, literPro100K
 }
 
 /**
- * THG-Quote Erlöse in Euro (Quotenpreis in Ct./1000 L Minderung)
- * @param {number} literHvo
- * @param {number} quotenPreisCent - Ct. pro 1000 L Minderung
+ * THG-Quote Erlöse in Euro (Quotenpreis in €/t CO2)
+ * @param {number} literHvo - Verbrauch HVO in Liter/Jahr
+ * @param {number} quotenPreisEurProTonne - € pro Tonne CO2-Minderung
  */
-export function thgQuoteErloese(literHvo, quotenPreisCent) {
-  if (!literHvo || !quotenPreisCent) return 0;
-  const minderung = (THG_MINDERUNG_PROZENT / 100) * literHvo;
-  const erloeseCent = (minderung / 1000) * quotenPreisCent;
-  return erloeseCent / 100; // Euro
+/** CO2-Minderung in t pro Liter (Diesel ~2,65 kg/L, HVO ~0,2 kg/L → 2,45 kg/L = 0,00245 t/L) */
+const CO2_MINDERUNG_T_PRO_LITER = (2.65 - 0.2) / 1000;
+
+export function thgQuoteErloese(literHvo, quotenPreisEurProTonne) {
+  if (!literHvo || quotenPreisEurProTonne == null) return 0;
+  const minderungT = literHvo * CO2_MINDERUNG_T_PRO_LITER;
+  return minderungT * quotenPreisEurProTonne;
 }
 
 /**

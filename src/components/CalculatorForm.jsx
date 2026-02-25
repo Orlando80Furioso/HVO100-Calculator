@@ -2,7 +2,7 @@ import React from 'react'
 import styles from './CalculatorForm.module.css'
 
 export function CalculatorForm({ inputs, onChange }) {
-  const { anzahlBusse, laufleistungKm, literPro100Km, quotenPreisCent } = inputs
+  const { anzahlBusse, laufleistungKm, literPro100Km, quotenPreisEurProTonne } = inputs
 
   return (
     <section className={styles.section} aria-label="Eingabeparameter">
@@ -43,13 +43,13 @@ export function CalculatorForm({ inputs, onChange }) {
           />
         </label>
         <label className={styles.label}>
-          <span className={styles.labelText}>Quotenpreis (Ct./1000 L Minderung)</span>
+          <span className={styles.labelText}>Quotenpreis (€/t CO₂)</span>
           <input
             type="number"
             min={0}
-            step={1}
-            value={quotenPreisCent}
-            onChange={(e) => onChange('quotenPreisCent', Number(e.target.value) || 0)}
+            step={10}
+            value={quotenPreisEurProTonne}
+            onChange={(e) => onChange('quotenPreisEurProTonne', Number(e.target.value) || 0)}
             className={styles.input}
           />
         </label>

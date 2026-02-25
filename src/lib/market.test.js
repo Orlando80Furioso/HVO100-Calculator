@@ -12,7 +12,7 @@ describe('market router', () => {
   it('fetchMarketData returns object with required numeric fields and lastUpdated string', async () => {
     const data = await fetchMarketData()
     expect(data).toBeDefined()
-    expect(typeof data.thgQuotenPreisCent).toBe('number')
+    expect(typeof data.thgQuotenPreisEurProTonne).toBe('number')
     expect(typeof data.behgCentProLiter).toBe('number')
     expect(typeof data.dieselPreisCentProLiter).toBe('number')
     expect(typeof data.hvo100PreisCentProLiter).toBe('number')
@@ -26,13 +26,13 @@ describe('market router', () => {
   })
 
   it('getThgQuotenPreis returns number from market or fallback', () => {
-    expect(getThgQuotenPreis({ thgQuotenPreisCent: 45 })).toBe(45)
-    expect(getThgQuotenPreis(null)).toBe(42)
+    expect(getThgQuotenPreis({ thgQuotenPreisEurProTonne: 450 })).toBe(450)
+    expect(getThgQuotenPreis(null)).toBe(450)
   })
 
   it('isValidMarketData returns true only for valid market object', () => {
     const valid = {
-      thgQuotenPreisCent: 42,
+      thgQuotenPreisEurProTonne: 450,
       behgCentProLiter: 8.16,
       dieselPreisCentProLiter: 168,
       hvo100PreisCentProLiter: 182,
@@ -41,7 +41,7 @@ describe('market router', () => {
     expect(isValidMarketData(valid)).toBe(true)
     expect(isValidMarketData(null)).toBe(false)
     expect(isValidMarketData({})).toBe(false)
-    expect(isValidMarketData({ ...valid, thgQuotenPreisCent: '42' })).toBe(false)
+    expect(isValidMarketData({ ...valid, thgQuotenPreisEurProTonne: '450' })).toBe(false)
   })
 
   it('formatMarketDate formats ISO date to DD.MM.YYYY', () => {

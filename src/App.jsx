@@ -19,7 +19,7 @@ const DEFAULT_INPUTS = {
   anzahlBusse: 50,
   laufleistungKm: 45000,
   literPro100Km: 38,
-  quotenPreisCent: 42,
+  quotenPreisEurProTonne: 450,
 }
 
 export default function App() {
@@ -35,7 +35,7 @@ export default function App() {
       const data = await fetchMarketData()
       setMarket(data)
       setLastUpdated(data.lastUpdated)
-      setInputs((prev) => ({ ...prev, quotenPreisCent: data.thgQuotenPreisCent }))
+      setInputs((prev) => ({ ...prev, quotenPreisEurProTonne: data.thgQuotenPreisEurProTonne }))
     } finally {
       setMarketLoading(false)
     }
@@ -46,13 +46,13 @@ export default function App() {
   }, [])
 
   const behgCent = market ? getBehgCentPerLiter(market) : 8.16
-  const quotenPreis = market ? getThgQuotenPreis(market) : inputs.quotenPreisCent
+  const quotenPreis = market ? getThgQuotenPreis(market) : inputs.quotenPreisEurProTonne
   const dieselPreis = market?.dieselPreisCentProLiter ?? 168.5
   const hvoPreis = market?.hvo100PreisCentProLiter ?? 182
 
   const { kpis, literJahr, dieselKg, hvoKg } = useMemo(() => {
     const liter = dieselVerbrauchProJahr(inputs.anzahlBusse, inputs.laufleistungKm, inputs.literPro100Km)
-    const thg = thgQuoteErloese(liter, inputs.quotenPreisCent)
+    const thg = thgQuoteErloese(liter, inputs.quotenPreisEurProTonne)
     const behg = behgErsparnisEuro(liter, behgCent)
     const mehrkosten = kraftstoffMehrkostenEuro(liter, dieselPreis, hvoPreis)
     const netto = nettoVorteilEuro(thg, behg, mehrkosten)
@@ -130,7 +130,7 @@ export default function App() {
                 behgErsparnis={kpis.behgErsparnis}
                 kraftstoffMehrkosten={kpis.kraftstoffMehrkosten}
               />
-              <PreisszenarienChart basisQuotenPreis={inputs.quotenPreisCent} literJahr={literJahr} />
+              <PreisszenarienChart basisQuotenPreis={inputs.quotenPreisEurProTonne} literJahr={literJahr} />
             </section>
           </>
         )}
