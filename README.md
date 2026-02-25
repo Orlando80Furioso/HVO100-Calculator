@@ -8,13 +8,13 @@ Web-App zur Echtzeit-Kalkulation von **THG-Quoten-Erlösen**, **CO₂-Steuer-Ers
 - **Vier KPI-Karten:** THG-Quote Erlöse, BEHG-Ersparnis, Kraftstoff-Mehrkosten, Nettovorteil (Live)
 - **Drei Visualisierungen:** CO₂-Emissionsvergleich (Diesel vs. HVO100), Einsparungsaufschlüsselung (Pie), Preisszenarien (Linie)
 - **Finanzen-Tab:** Aufschlüsselung THG-Quote-Erlöse, CO₂-Steuer-Ersparnis, Kraftstoff-Mehrkosten + Balkendiagramm
-- **Tagesaktuelle Marktdaten:** Button „Aktualisieren“ ruft (simulierte) tagesaktuelle Preise ab; BEHG in Ct./L Ersparnis wird angezeigt
+- **Tagesaktuelle Marktdaten:** Button „Aktualisieren“ ruft **Diesel- und HVO-Preise für Mönchengladbach** (Tankerkönig-API) sowie einen THG-Quotenpreis-Fallback ab
 - **Design:** Emerald-Green/Blue Farbschema, moderne UI
 
 ## Technik
 
 - **Frontend:** React 18, Vite 5, Recharts
-- **Marktdaten:** `src/lib/market.js` (Market Router) – tagesaktuelle Werte (in Produktion durch echte API ersetzen)
+- **Marktdaten:** `src/lib/market.js` (Market Router) – **Diesel/HVO:** Tankerkönig (Mönchengladbach, 5 km-Radius), **THG:** Fallback (keine öffentliche API)
 - **Tests:** Vitest; 5 Tests für den Market Router in `src/lib/market.test.js`
 
 ## Installation & Start
@@ -26,6 +26,17 @@ npm run dev
 ```
 
 Öffnen: `http://localhost:5173`
+
+## Tagesaktuelle Preise (Mönchengladbach)
+
+Für **tagesaktuelle Dieselpreise** in Mönchengladbach wird die [Tankerkönig-API](https://creativecommons.tankerkoenig.de/) genutzt. Der **HVO100-Preis** wird als Diesel + 12 Ct./L geschätzt (keine flächendeckende HVO-Preis-API). Der **THG-Quotenpreis** nutzt einen Fallback (keine öffentliche Echtzeit-API).
+
+1. Kostenlosen API-Key anfordern: [creativecommons.tankerkoenig.de](https://creativecommons.tankerkoenig.de/)
+2. Datei `.env` anlegen (siehe `.env.example`):
+   ```
+   VITE_TANKERKOENIG_API_KEY=dein-api-key
+   ```
+3. App neu starten (`npm run dev`). Beim Klick auf **„Aktualisieren“** werden die aktuellen Dieselpreise (Ø der Tankstellen im 5 km-Radius um Mönchengladbach) geladen.
 
 ## Tests (Market Router)
 

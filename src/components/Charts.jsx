@@ -17,17 +17,24 @@ import styles from './Charts.module.css'
 
 const EMERALD = '#10b981'
 const BLUE = '#3b82f6'
+const CYAN = '#22d3ee'
 const SLATE = '#64748b'
 const AMBER = '#f59e0b'
+const AXIS_TICK_FILL = '#94a3b8'
+const TOOLTIP_STYLE = { background: '#132033', border: '1px solid rgba(16,185,129,0.3)', borderRadius: 8, color: '#f1f5f9' }
 
-export function EmissionsvergleichChart({ dieselKg, hvoKg }) {
+export function EmissionsvergleichChart({ dieselKg, hvoKg, co2EinsparungEBusKg = 0 }) {
   const [unit, setUnit] = React.useState('kg')
   const isTonnen = unit === 't'
   const dieselVal = isTonnen ? Math.round((dieselKg / 1000) * 100) / 100 : Math.round(dieselKg)
   const hvoVal = isTonnen ? Math.round((hvoKg / 1000) * 100) / 100 : Math.round(hvoKg)
+  const eBusVal = co2EinsparungEBusKg > 0
+    ? (isTonnen ? Math.round((co2EinsparungEBusKg / 1000) * 100) / 100 : Math.round(co2EinsparungEBusKg))
+    : null
   const data = [
     { name: 'Diesel', emissionen: dieselVal, fill: SLATE },
     { name: 'HVO100', emissionen: hvoVal, fill: EMERALD },
+    ...(eBusVal != null ? [{ name: 'E-Busse (eingespart)', emissionen: eBusVal, fill: BLUE }] : []),
   ]
   const formatTooltip = (v) => (isTonnen ? `${Number(v).toFixed(2)} t CO₂` : `${v} kg CO₂`)
   return (
@@ -54,12 +61,9 @@ export function EmissionsvergleichChart({ dieselKg, hvoKg }) {
       <ResponsiveContainer width="100%" height={260}>
         <BarChart data={data} margin={{ top: 12, right: 12, left: 12, bottom: 12 }}>
           <CartesianGrid strokeDasharray="3 3" stroke="rgba(16,185,129,0.15)" />
-          <XAxis dataKey="name" stroke="#94a3b8" fontSize={12} />
-          <YAxis stroke="#94a3b8" fontSize={12} unit={isTonnen ? ' t' : ' kg'} />
-          <Tooltip
-            contentStyle={{ background: '#132033', border: '1px solid rgba(16,185,129,0.3)', borderRadius: 8 }}
-            formatter={(v) => [formatTooltip(v), 'Emissionen']}
-          />
+          <XAxis dataKey="name" stroke={AXIS_TICK_FILL} tick={{ fill: AXIS_TICK_FILL }} fontSize={12} />
+          <YAxis stroke={AXIS_TICK_FILL} tick={{ fill: AXIS_TICK_FILL }} fontSize={12} unit={isTonnen ? ' t' : ' kg'} />
+          <Tooltip contentStyle={TOOLTIP_STYLE} formatter={(v) => [formatTooltip(v), 'Emissionen']} />
           <Bar dataKey="emissionen" radius={[4, 4, 0, 0]}>
             {data.map((entry, i) => (
               <Cell key={i} fill={entry.fill} />
@@ -71,9 +75,10 @@ export function EmissionsvergleichChart({ dieselKg, hvoKg }) {
   )
 }
 
-export function EinsparungsaufschlüsselungChart({ thgErloese, behgErsparnis, kraftstoffMehrkosten }) {
+export function EinsparungsaufschlüsselungChart({ thgErloese, thgErloeseEBus = 0, behgErsparnis, kraftstoffMehrkosten }) {
   let data = [
-    { name: 'THG-Quote', value: Math.max(0, thgErloese), fill: EMERALD },
+    { name: 'THG (HVO)', value: Math.max(0, thgErloese), fill: EMERALD },
+    ...(thgErloeseEBus > 0 ? [{ name: 'THG (E-Busse)', value: thgErloeseEBus, fill: CYAN }] : []),
     { name: 'BEHG-Ersparnis', value: Math.max(0, behgErsparnis), fill: BLUE },
     { name: 'Kraftstoff-Mehrkosten', value: Math.abs(kraftstoffMehrkosten), fill: AMBER },
   ].filter((d) => d.value > 0)
@@ -100,10 +105,7 @@ export function EinsparungsaufschlüsselungChart({ thgErloese, behgErsparnis, kr
               <Cell key={i} fill={entry.fill} />
             ))}
           </Pie>
-          <Tooltip
-            contentStyle={{ background: '#132033', border: '1px solid rgba(16,185,129,0.3)', borderRadius: 8 }}
-            formatter={(v) => [`${Number(v).toFixed(2)} €`, '']}
-          />
+          <Tooltip contentStyle={TOOLTIP_STYLE} formatter={(v) => [`${Number(v).toFixed(2)} €`, '']} />
         </PieChart>
       </ResponsiveContainer>
     </div>
@@ -124,12 +126,9 @@ export function PreisszenarienChart({ basisQuotenPreis, literJahr }) {
       <ResponsiveContainer width="100%" height={260}>
         <LineChart data={data} margin={{ top: 12, right: 12, left: 12, bottom: 12 }}>
           <CartesianGrid strokeDasharray="3 3" stroke="rgba(16,185,129,0.15)" />
-          <XAxis dataKey="quotenPreis" stroke="#94a3b8" fontSize={12} unit=" €/t" />
-          <YAxis stroke="#94a3b8" fontSize={12} />
-          <Tooltip
-            contentStyle={{ background: '#132033', border: '1px solid rgba(16,185,129,0.3)', borderRadius: 8 }}
-            formatter={(v) => [`${v} €`, 'THG-Erlöse']}
-          />
+          <XAxis dataKey="quotenPreis" stroke={AXIS_TICK_FILL} tick={{ fill: AXIS_TICK_FILL }} fontSize={12} unit=" €/t" />
+          <YAxis stroke={AXIS_TICK_FILL} tick={{ fill: AXIS_TICK_FILL }} fontSize={12} />
+          <Tooltip contentStyle={TOOLTIP_STYLE} formatter={(v) => [`${v} €`, 'THG-Erlöse']} />
           <Line type="monotone" dataKey="thgErloese" stroke={EMERALD} strokeWidth={2} dot={{ fill: EMERALD }} name="THG-Erlöse" />
         </LineChart>
       </ResponsiveContainer>

@@ -2,20 +2,32 @@ import React from 'react'
 import styles from './CalculatorForm.module.css'
 
 export function CalculatorForm({ inputs, onChange }) {
-  const { anzahlBusse, laufleistungKm, literPro100Km, quotenPreisEurProTonne } = inputs
+  const { anzahlBusse, anzahlElektrisch = 0, laufleistungKm, literPro100Km, quotenPreisEurProTonne } = inputs
+  const maxElektrisch = Math.max(0, Number(anzahlBusse) || 0)
 
   return (
     <section className={styles.section} aria-label="Eingabeparameter">
       <h2 className={styles.title}>Eingabeparameter</h2>
       <div className={styles.grid}>
         <label className={styles.label}>
-          <span className={styles.labelText}>Anzahl Busse</span>
+          <span className={styles.labelText}>Anzahl Busse (gesamt)</span>
           <input
             type="number"
             min={1}
             max={10000}
             value={anzahlBusse}
             onChange={(e) => onChange('anzahlBusse', Number(e.target.value) || 0)}
+            className={styles.input}
+          />
+        </label>
+        <label className={styles.label}>
+          <span className={styles.labelText}>davon vollelektrisch</span>
+          <input
+            type="number"
+            min={0}
+            max={maxElektrisch}
+            value={Math.min(anzahlElektrisch, maxElektrisch)}
+            onChange={(e) => onChange('anzahlElektrisch', Math.min(maxElektrisch, Math.max(0, Number(e.target.value) || 0)))}
             className={styles.input}
           />
         </label>

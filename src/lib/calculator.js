@@ -82,3 +82,36 @@ export function co2HvoKg(liter) {
 export function co2EinsparungKg(literDiesel) {
   return co2DieselKg(literDiesel) - co2HvoKg(literDiesel);
 }
+
+/** Liter pro Bus und Jahr */
+export function literProBusJahr(laufleistungKm, literPro100Km) {
+  if (!laufleistungKm || !literPro100Km) return 0;
+  return (laufleistungKm / 100) * literPro100Km;
+}
+
+/** Busse mit Kraftstoff (nicht vollelektrisch) */
+export function busseMitKraftstoff(anzahlBusse, anzahlElektrisch) {
+  const e = Number(anzahlElektrisch) || 0;
+  return Math.max(0, (Number(anzahlBusse) || 0) - e);
+}
+
+/**
+ * CO2-Einsparung durch vollelektrische Busse (kg/Jahr)
+ * = eingesparte Diesel-CO2, wenn diese Busse mit Strom statt Diesel fahren
+ */
+export function co2EinsparungDurchEBusseKg(anzahlElektrisch, laufleistungKm, literPro100Km) {
+  if (!anzahlElektrisch || anzahlElektrisch <= 0) return 0;
+  const literProBus = literProBusJahr(laufleistungKm, literPro100Km);
+  return anzahlElektrisch * literProBus * CO2_KG_PRO_LITER_DIESEL;
+}
+
+/**
+ * THG-Quote-Erlöse durch vollelektrische Busse (€/Jahr)
+ * Annahme: Vermiedene Diesel-CO2 wird als Minderung angerechnet (€/t CO2)
+ */
+export function thgQuoteErloeseEBus(anzahlElektrisch, laufleistungKm, literPro100Km, quotenPreisEurProTonne) {
+  if (!anzahlElektrisch || anzahlElektrisch <= 0 || quotenPreisEurProTonne == null) return 0;
+  const literProBus = literProBusJahr(laufleistungKm, literPro100Km);
+  const co2VermeidetT = (anzahlElektrisch * literProBus * CO2_KG_PRO_LITER_DIESEL) / 1000;
+  return co2VermeidetT * quotenPreisEurProTonne;
+}

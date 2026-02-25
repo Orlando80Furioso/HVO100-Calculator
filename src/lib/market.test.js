@@ -27,7 +27,7 @@ describe('market router', () => {
 
   it('getThgQuotenPreis returns number from market or fallback', () => {
     expect(getThgQuotenPreis({ thgQuotenPreisEurProTonne: 450 })).toBe(450)
-    expect(getThgQuotenPreis(null)).toBe(450)
+    expect(getThgQuotenPreis(null)).toBe(120)
   })
 
   it('isValidMarketData returns true only for valid market object', () => {

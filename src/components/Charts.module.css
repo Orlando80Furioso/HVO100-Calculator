@@ -6,6 +6,13 @@
   min-height: 300px;
 }
 
+/* Einheitliche Textfarben wie im THG-Chart (Hellgrau/Slate) */
+.chartCard :global(.recharts-pie-label),
+.chartCard :global(.recharts-label-list text),
+.chartCard :global(.recharts-cartesian-axis-tick-value) {
+  fill: #94a3b8;
+}
+
 .chartHeader {
   display: flex;
   align-items: center;

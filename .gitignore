@@ -4,7 +4,8 @@ dist-ssr
 *.local
 .DS_Store
 .env
-.env.*
+.env.local
+.env.*.local
 *.log
 .idea
 .vscode

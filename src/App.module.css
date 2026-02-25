@@ -65,6 +65,14 @@
   font-variant-numeric: tabular-nums;
 }
 
+.dataSource {
+  font-size: 0.7rem;
+  color: var(--emerald-300);
+  background: rgba(16, 185, 129, 0.15);
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+}
+
 .main {
   flex: 1;
   max-width: 1200px;
