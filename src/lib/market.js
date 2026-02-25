@@ -51,7 +51,7 @@ export async function fetchTankerkoenigDiesel(apiKey) {
  * @returns {Promise<{ thgQuotenPreisEurProTonne: number, behgCentProLiter: number, dieselPreisCentProLiter: number, hvo100PreisCentProLiter: number, lastUpdated: string, source?: string }>}
  */
 export async function fetchMarketData(options = {}) {
-  const apiKey = options.tankerkoenigApiKey ?? (typeof import.meta !== 'undefined' && import.meta.env?.VITE_TANKERKOENIG_API_KEY) || ''
+  const apiKey = options.tankerkoenigApiKey ?? ((typeof import.meta !== 'undefined' && import.meta.env?.VITE_TANKERKOENIG_API_KEY) || '')
   const today = new Date().toISOString().split('T')[0]
 
   let dieselCentProLiter = FALLBACK_DATA.dieselPreisCentProLiter
